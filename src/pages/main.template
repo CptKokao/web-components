@@ -1,1 +1,5 @@
+<main-nav search='test' type='post'></main-nav>
+
 <div>Main template</div>
+
+<nav-link text='Link' href="/users"></nav-link>

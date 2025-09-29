@@ -31,10 +31,11 @@ export const goTo = (path) => {
 };
 
 const initRouter = () => {
-	// window.addEventListener('popstate', () => {
-	// 	console.log('popstate');
-	// 	render(new URL(window.location.href).pathname);
-	// });
+	// Браузерная навигация
+	window.addEventListener('popstate', () => {
+		console.log('popstate');
+		render(new URL(window.location.href).pathname);
+	});
 
 	// document.querySelectorAll('[href^="/"]').forEach((e) => {
 	// 	e.preventDefault();
