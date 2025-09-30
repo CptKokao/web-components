@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "vite",
+    "build": "cross-env BUILD_TYPE=dev vite build",
+    "serve": "vite preview --port 3000",
+    "build-prod": "cross-env BUILD_TYPE=prod vite build",
+    "server": "npx json-server --port 1111 ./db.json"
+
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^7.2.1",
