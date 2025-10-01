@@ -9,6 +9,7 @@ export const routers = {
 	Main: new Route(appConstants.routes.index),
 	Posts: new Route(appConstants.routes.posts),
 	Users: new Route(appConstants.routes.users),
+	PostSearch: new Route(appConstants.routes.postsSearch),
 };
 
 export const render = (path) => {
@@ -18,6 +19,8 @@ export const render = (path) => {
 		result = MainPage();
 	} else if (routers.Posts.match(path)) {
 		result = PostsPage();
+	} else if (routers.PostSearch.match(path)) {
+		result = PostsPage(routers.PostSearch.match(path));
 	} else if (routers.Users.match(path)) {
 		result = UsersPage();
 	}

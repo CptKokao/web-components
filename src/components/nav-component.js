@@ -1,5 +1,5 @@
 import appConstants from '../common/constants';
-import { render } from '../router';
+import { routers, goTo } from '../router';
 
 class NavComponent extends HTMLElement {
 	constructor() {
@@ -58,7 +58,12 @@ class NavComponent extends HTMLElement {
 			if (e.key === 'Enter') {
 				e.preventDefault();
 				const text = e.target.value;
-				console.log('search', text);
+				if (text) {
+					if (this.searchType === appConstants.search.types.post) {
+						const url = routers.PostSearch.reverse({ query: text });
+						goTo(url);
+					}
+				}
 			}
 		});
 
@@ -69,6 +74,7 @@ class NavComponent extends HTMLElement {
 		const shadow = this.shadowRoot;
 		const input = shadow.querySelector('input');
 		const search = this.getAttribute('search');
+		console.log(search);
 		input.value = search;
 
 		if (this.searchType === appConstants.search.types.post) {
