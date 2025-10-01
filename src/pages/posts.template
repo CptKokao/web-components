@@ -1,1 +1,2 @@
 <div>Posts template</div>
+<posts-component search="${props.query || ''}">Posts template</posts-component>
