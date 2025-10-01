@@ -1,1 +1,4 @@
 <div>Users template</div>
+<main-nav search="${props.query || ''}" type='user'></main-nav>
+
+<list-component search="${props.query || ''}" list-type="user">Posts template</list-component>

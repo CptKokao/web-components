@@ -63,6 +63,10 @@ class NavComponent extends HTMLElement {
 						const url = routers.PostSearch.reverse({ query: text });
 						goTo(url);
 					}
+					if (this.searchType === appConstants.search.types.user) {
+						const url = routers.UsersSearch.reverse({ query: text });
+						goTo(url);
+					}
 				}
 			}
 		});

@@ -8,8 +8,9 @@ import UsersPage from '../pages/users.template';
 export const routers = {
 	Main: new Route(appConstants.routes.index),
 	Posts: new Route(appConstants.routes.posts),
-	Users: new Route(appConstants.routes.users),
 	PostSearch: new Route(appConstants.routes.postsSearch),
+	Users: new Route(appConstants.routes.users),
+	UsersSearch: new Route(appConstants.routes.usersSearch),
 };
 
 export const render = (path) => {
@@ -23,6 +24,9 @@ export const render = (path) => {
 		result = PostsPage(routers.PostSearch.match(path));
 	} else if (routers.Users.match(path)) {
 		result = UsersPage();
+	} else if (routers.UsersSearch.match(path)) {
+		console.log('first');
+		result = UsersPage(routers.UsersSearch.match(path));
 	}
 
 	document.querySelector('#app').innerHTML = result;

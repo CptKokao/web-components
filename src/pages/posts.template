@@ -1,4 +1,4 @@
 <div >Posts template</div>
 <main-nav search="${props.query || ''}" type='post'></main-nav>
 
-<posts-component search="${props.query || ''}">Posts template</posts-component>
+<list-component search="${props.query || ''}" list-type="post">Posts template</list-component>

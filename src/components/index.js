@@ -2,5 +2,6 @@ import './link-component';
 import './nav-component';
 import './user-avatar';
 import './post-component';
-import './posts-component';
+import './list-component';
 import './pagination-component';
+import './user-component';
