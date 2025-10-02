@@ -5,6 +5,7 @@ export const getUser = (userId) => {
 };
 
 export const setUser = (user) => {
+	console.log(user.id);
 	users.set(user.id, user);
 };
 

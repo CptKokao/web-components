@@ -1,6 +1,5 @@
-import appConstants from '../common/constants';
+import { colorForString, getUserInitials, invertColor, randomColor } from '../common/utils';
 import { goTo } from '../router';
-import { randomColor, invertColor, getUserInitials } from '../common/utils';
 
 class UserAvatar extends HTMLElement {
 	constructor() {
@@ -79,6 +78,7 @@ class UserAvatar extends HTMLElement {
 
 		const avatar = shadow.querySelector('.user-avatar');
 		const text = shadow.querySelector('.avatar-text');
+		const style = shadow.querySelector('style');
 
 		if (small) {
 			avatar.setAttribute('class', 'user-avatar small');
@@ -89,6 +89,35 @@ class UserAvatar extends HTMLElement {
 
 		if (userName) {
 			text.textContent = getUserInitials(userName);
+			const bgColor = colorForString(userName);
+			const textColor = invertColor(bgColor);
+
+			style.textContent = `
+               
+               .user-avatar{
+                   display: flex;
+                   justify-content: center;
+                   align-items: center;
+                   font-size: 20px;
+                   width: 40px;
+                   height: 40px;
+                   text-transform: uppercase;
+                   font-family: fixed;
+                   border-radius: 50%;
+                   padding: 16px;
+                   background-color: ${bgColor};
+                   color: ${textColor};
+                   margin-right: 5px;
+               }
+    
+               .user-avatar.small{
+                   font-family: arial;
+                   font-size: 16px;
+                   width: 10px;
+                   height: 10px;
+               }
+    
+            `;
 		}
 	}
 }

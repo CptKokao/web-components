@@ -3,8 +3,10 @@ import { goTo } from '../router';
 import { randomColor, invertColor, getUserInitials, highlightText } from '../common/utils';
 import { setPost } from '../service/posts';
 import { setUser } from '../service/users';
+import { setComment } from '../service/comments';
 import { getPosts, getPostsByUser, getPostsSearch } from '../api/postsApi';
 import { getUsers, getUsersSearch } from '../api/usersApi';
+import { getCommentsSearch, getCommentsByPost, getCommentsByUser } from '../api/commentsApi';
 
 class ListComponent extends HTMLElement {
 	constructor() {
@@ -13,7 +15,7 @@ class ListComponent extends HTMLElement {
 		this.page = 1;
 		this.lastPage = false;
 		this.listType = appConstants.list.types.post;
-
+		console.log(this.listType);
 		const shadow = this.attachShadow({ mode: 'open' });
 		const wrapper = document.createElement('div');
 		wrapper.setAttribute('class', 'list-block');
@@ -38,19 +40,24 @@ class ListComponent extends HTMLElement {
 				if (this.listType === appConstants.list.types.user) {
 					this.getUsersPage();
 				}
+				if (this.listType === appConstants.list.types.comments) {
+					this.getCommentsPage();
+				}
 			}
 		});
 
 		pagination.addEventListener('paginate-next', (e) => {
 			e.stopPropagation();
 			if (!this.lastPage) {
-				console.log(this.listType);
 				this.page = this.page + 1;
 				if (this.listType === appConstants.list.types.post) {
 					this.getPostsPage();
 				}
 				if (this.listType === appConstants.list.types.user) {
 					this.getUsersPage();
+				}
+				if (this.listType === appConstants.list.types.comments) {
+					this.getCommentsPage();
 				}
 			}
 		});
@@ -85,8 +92,6 @@ class ListComponent extends HTMLElement {
 	}
 
 	updateComponent() {
-		const shadow = this.shadowRoot;
-		const userId = this.getAttribute('user');
 		const search = this.getAttribute('search');
 		const listType = this.getAttribute('list-type');
 
@@ -98,22 +103,15 @@ class ListComponent extends HTMLElement {
 		}
 
 		if (listType === appConstants.list.types.post) {
-			const title = shadow.querySelector('.list-title');
-
-			title.textContent = 'All posts';
-
-			if (userId) {
-				title.textContent = 'Users posts';
-			}
-
 			this.getPostsPage();
 		}
 
 		if (listType === appConstants.list.types.user) {
-			const title = shadow.querySelector('.list-title');
-
-			title.textContent = 'All users';
 			this.getUsersPage();
+		}
+
+		if (listType === appConstants.list.types.comments) {
+			this.getCommentsPage();
 		}
 	}
 
@@ -141,7 +139,12 @@ class ListComponent extends HTMLElement {
 		pagination.setAttribute('page', this.page);
 		pagination.setAttribute('last', this.lastPage);
 
-		wrapper.innerHTML = '';
+		const title = shadow.querySelector('.list-title');
+		title.textContent = 'All posts';
+
+		if (userId) {
+			title.textContent = "Users' posts";
+		}
 
 		const apiCall = this.search
 			? getPostsSearch(this.search, this.page)
@@ -152,6 +155,9 @@ class ListComponent extends HTMLElement {
 		apiCall
 			.then((posts) => {
 				this.lastPage = posts.length < 10;
+				const count = posts.length;
+				pagination.setAttribute('last', this.lastPage);
+				wrapper.innerHTML = '';
 				posts.forEach((post) => {
 					setPost(post);
 					const postElement = document.createElement('post-component');
@@ -161,6 +167,10 @@ class ListComponent extends HTMLElement {
 					}
 					wrapper.appendChild(postElement);
 				});
+				if (count === 0 && this.page === 1) {
+					//no data
+					wrapper.innerHTML = '<h3>No posts yet</h3>';
+				}
 			})
 			.catch((error) => console.log(error));
 	}
@@ -173,7 +183,8 @@ class ListComponent extends HTMLElement {
 		pagination.setAttribute('page', this.page);
 		pagination.setAttribute('last', this.lastPage);
 
-		wrapper.innerHTML = '';
+		const title = shadow.querySelector('.list-title');
+		title.textContent = 'All users';
 
 		const apiCall = this.search ? getUsersSearch(this.search, this.page) : getUsers(this.page);
 
@@ -191,6 +202,62 @@ class ListComponent extends HTMLElement {
 				});
 			})
 			.catch((error) => console.log(error));
+	}
+
+	getCommentsPage() {
+		const shadow = this.shadowRoot;
+		const userId = this.getAttribute('user');
+		const postId = this.getAttribute('post');
+		const wrapper = shadow.querySelector('.list-block');
+		const pagination = shadow.querySelector('pagination-component');
+		const title = shadow.querySelector('.list-title');
+
+		title.textContent = 'All comments';
+		if (userId) {
+			title.textContent = "User's comments";
+		}
+		if (postId) {
+			title.textContent = "Post's comments";
+		}
+
+		pagination.setAttribute('page', this.page);
+		pagination.setAttribute('last', this.lastPage);
+
+		const apiCall = this.search
+			? getCommentsSearch(this.search, this.page)
+			: userId
+			? getCommentsByUser(userId, this.page)
+			: postId
+			? getCommentsByPost(postId, this.page)
+			: null;
+
+		if (apiCall) {
+			apiCall
+				.then((comments) => {
+					const count = comments.length;
+					this.lastPage = count < 10;
+					pagination.setAttribute('last', this.lastPage);
+					wrapper.innerHTML = '';
+					console.log(comments);
+					comments.forEach((comment) => {
+						setComment(comment);
+						const commentElement = document.createElement('comment-component');
+						commentElement.setAttribute('id', comment.id);
+						if (this.search) {
+							commentElement.setAttribute('search', this.search);
+						}
+						if (userId) {
+							commentElement.setAttribute('post-btn', 'true');
+						}
+						wrapper.appendChild(commentElement);
+					});
+					if (count === 0 && this.page === 1) {
+						//no data
+						wrapper.innerHTML = '<h3>No comments yet</h3>';
+					}
+				})
+				.catch((error) => console.log(error));
+		}
 	}
 }
 

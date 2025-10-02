@@ -1,5 +1,5 @@
 import appConstants from '../common/constants';
-import { goTo } from '../router';
+import { goTo, routes } from '../router';
 import { randomColor, invertColor, getUserInitials, highlightText } from '../common/utils';
 import { getPost } from '../service/posts';
 
@@ -43,7 +43,6 @@ class PostComponent extends HTMLElement {
                overflow: hidden;
                cursor: pointer;
            }
-
            .post-block .post-user{
                padding: 10px;
                font-family: arial;
@@ -72,11 +71,11 @@ class PostComponent extends HTMLElement {
 		const id = this.getAttribute('id');
 		const search = this.getAttribute('search');
 		const post = getPost(id);
-
+		console.log(post);
 		const title = shadow.querySelector('.post-title');
 		title.textContent = post.title;
-
 		const text = shadow.querySelector('.post-text');
+
 		if (search) {
 			text.innerHTML = highlightText(post.text, search);
 		} else {
@@ -85,9 +84,8 @@ class PostComponent extends HTMLElement {
 
 		text.addEventListener('click', (e) => {
 			e.stopPropagation();
-			//goto post
-			//const url =
-			//goTo(url)
+			const url = routes.Post.reverse({ post: id });
+			goTo(url);
 		});
 
 		const user = shadow.querySelector('.post-user');
@@ -95,14 +93,12 @@ class PostComponent extends HTMLElement {
 		userAvatar.setAttribute('user-name', post.user.user_name);
 
 		const userName = shadow.querySelector('.user-name');
-		//debugger
 		userName.textContent = post.user.user_fullname;
 
 		user.addEventListener('click', (e) => {
 			e.stopPropagation();
-			//goto user
-			//const url =
-			//goTo(url)
+			const url = routes.User.reverse({ user: post.user.id });
+			goTo(url);
 		});
 	}
 }

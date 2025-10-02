@@ -5,6 +5,10 @@ const appConstants = {
 		postsSearch: '/posts/query/:query',
 		users: '/users',
 		usersSearch: '/users/query/:query',
+		post: '/post/:post',
+		user: '/user/:user',
+		userPosts: '/user/:user/posts',
+		userComments: '/user/:user/comments',
 	},
 	search: {
 		types: {
@@ -16,6 +20,7 @@ const appConstants = {
 		types: {
 			post: 'post',
 			user: 'user',
+			comments: 'comment',
 		},
 	},
 };

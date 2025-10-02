@@ -1,8 +1,8 @@
 import appConstants from '../common/constants';
-import { goTo } from '../router';
+import { goTo, routes } from '../router';
 import { highlightText } from '../common/utils';
 import { getUser, setUser } from '../service/users';
-import { getUsersById } from '../api/usersApi';
+import { getUserById } from '../api/usersApi';
 
 class UserComponent extends HTMLElement {
 	constructor() {
@@ -42,17 +42,20 @@ class UserComponent extends HTMLElement {
 		const id = this.getAttribute('id');
 		const single = this.getAttribute('single');
 		const user = getUser(id);
+		const userAvatar = shadow.querySelector('user-avatar');
 
 		if (single) {
-			const title = shadow.querySelector('user-title-main');
+			const title = shadow.querySelector('.user-title-main');
 			title.textContent = 'User info';
+		} else {
+			userAvatar.setAttribute('small', 'true');
 		}
 		this.updateStyle();
 
 		if (user) {
 			this.updateUser();
 		} else {
-			getUsersById(id)
+			getUserById(id)
 				.then((user) => {
 					setUser(user);
 					this.updateUser();
@@ -60,26 +63,36 @@ class UserComponent extends HTMLElement {
 				.catch((e) => console.log(e));
 		}
 
+		const userBlock = shadow.querySelector('.user-holder');
+
+		userBlock.addEventListener('click', (e) => {
+			e.stopPropagation();
+			//goto user page
+			const url = routes.User.reverse({ user: id });
+			goTo(url);
+		});
+
 		const btnPosts = shadow.querySelector('.user-btn-posts');
 		btnPosts.addEventListener('click', (e) => {
 			e.stopPropagation();
 			//goto user's posts
-			//const url =
-			//goTo(url)
+			const url = routes.UserPosts.reverse({ user: id });
+			goTo(url);
 		});
 
 		const btnComments = shadow.querySelector('.user-btn-comments');
 		btnComments.addEventListener('click', (e) => {
 			e.stopPropagation();
 			//goto user's comments
-			//const url =
-			//goTo(url)
+			const url = routes.UserComments.reverse({ user: id });
+			goTo(url);
 		});
 	}
 
 	updateUser() {
 		const shadow = this.shadowRoot;
 		const id = this.getAttribute('id');
+		const single = this.getAttribute('single');
 		const search = this.getAttribute('search');
 		const title = shadow.querySelector('.user-title');
 		const text = shadow.querySelector('.user-text');

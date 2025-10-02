@@ -1,17 +1,24 @@
 import baseApi from './baseApi';
 
-export const getPosts = (page) => baseApi.get(`/posts?_page=${page}&_limit=10&_embed=user`);
+export const getPosts = (page) => {
+	return baseApi.get(`/posts?_page=${page}&_limit=10&_embed=user`);
+};
 
-export const getPostsByUser = (userId, page) =>
-	baseApi.get(`/posts?userId=${userId}&_page=${page}&_limit=10&_expand=user`);
+export const getPostsByUser = (userId, page) => {
+	return baseApi.get(`/posts?userId=${userId}&_page=${page}&_limit=10&_embed=user`);
+};
 
-export const getPostsById = (postId) => baseApi.get(`/posts/postId=${postId}?_expand=user`);
+export const getPostById = (postId) => {
+	return baseApi.get(`/posts/${postId}?_embed=user`);
+};
 
-export const getPostsSearch = (search, page) => baseApi.get(`/posts?q=${search}&_page=${page}&_limit=10&_expand=user`);
+export const getPostsSearch = (search, page) => {
+	return baseApi.get(`/posts?q=${search}&_page=${page}&_limit=10&_embed=user`);
+};
 
 export default {
 	getPosts,
 	getPostsByUser,
-	getPostsById,
+	getPostById,
 	getPostsSearch,
 };
