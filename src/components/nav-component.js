@@ -1,5 +1,11 @@
 import appConstants from '../common/constants';
-import { routes, goTo } from '../router';
+import { goTo, routes } from '../router';
+import { dialogTypes } from './modal-dialog';
+
+const EVENTS = {
+	ok: 'ok-dialog-event',
+	cancel: 'cancel-dialog-event',
+};
 
 class NavComponent extends HTMLElement {
 	constructor() {
@@ -59,6 +65,16 @@ class NavComponent extends HTMLElement {
 				e.preventDefault();
 				const text = e.target.value;
 				if (text) {
+					if (text.trim().length < 2) {
+						//alert('Search string must contain at least 2 chars')
+						const md = shadow.querySelector('modal-dialog');
+
+						md.setAttribute('is-opened', 'true');
+						md.setAttribute('dialog-type', dialogTypes.error);
+						md.setAttribute('one-button', 'true');
+						return;
+					}
+
 					if (this.searchType === appConstants.search.types.post) {
 						const url = routes.PostSearch.reverse({ query: text });
 						goTo(url);
@@ -72,6 +88,24 @@ class NavComponent extends HTMLElement {
 		});
 
 		wrapper.appendChild(search);
+
+		//adding modal dialog
+		const modalDialog = document.createElement('modal-dialog');
+		modalDialog.innerHTML = `
+        <div slot="title">Error</div>
+        <div slot="message">Search string must contain at least 2 chars</div>
+        `;
+		modalDialog.setAttribute('ok-event', EVENTS.ok);
+		modalDialog.setAttribute('cancel-event', EVENTS.cancel);
+		modalDialog.addEventListener(EVENTS.ok, (event) => {
+			event.stopPropagation();
+			modalDialog.setAttribute('is-opened', 'false');
+		});
+		modalDialog.addEventListener(EVENTS.cancel, (event) => {
+			event.stopPropagation();
+			modalDialog.setAttribute('is-opened', 'false');
+		});
+		wrapper.appendChild(modalDialog);
 	}
 
 	updateSearch() {

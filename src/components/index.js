@@ -8,3 +8,6 @@ import './pagination-component';
 import './post-detail';
 import './comment-component';
 import './date-formatted';
+import './app-component';
+import './fake-form';
+import './modal-dialog';

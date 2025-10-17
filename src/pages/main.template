@@ -1,5 +1,13 @@
-<main-nav search='test' type='post'></main-nav>
+<style>
+    app-component .block{
+        padding: 32px;
+    }    
+</style>
 
-<div>Main template</div>
-
-<nav-link text='Link' href="/users"></nav-link>
+<main-nav type="post"></main-nav>
+<app-component>
+    <div slot="block-top" class="block">${props.topBlock || ''}</div>
+    <div slot="block-left" class="block">${props.leftBlock || ''}</div>
+    <div slot="block-right" class="block">${props.rightBlock || ''}</div>
+    <div slot="block-bottom" class="block">${props.bottomBlock || ''}</div>
+</app-component>
